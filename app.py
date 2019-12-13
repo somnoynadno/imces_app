@@ -23,7 +23,7 @@ def index():
 	if not 'username' in session:
 		return redirect(url_for('login'), 302)
 	else:
-		return "OK"
+		return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -45,11 +45,17 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 	# TODO: return register page
-    return "Register"
+	if not 'username' in session:
+		return redirect(url_for('login'), 302)
+
+	return "Register"
 
 
-@app.route('/get_info/<int:station_number>', methods=['GET'])
-def statistics(station_number	):
+@app.route('/get_info', methods=['GET'])
+def statistics():
+	if not 'username' in session:
+		return redirect(url_for('login'), 302)
+
 	conn = mysql.connector.connect(
          user='Fomin',
          password='VvbrKYKj',
