@@ -10,15 +10,17 @@
 
     <title>imces app</title>
   </head>
-  <body>
+  <body style="background-image: url(static/img/main_background_opacity.jpg); background-size: 100%;">
     <div class="container">
       <div class="row mt-1">
-        <div class="col float-left">
+        <div class="col col-md-3 pt-2 float-left" style="background-color: rgba(255,255,255,0.9); border-radius: 10px">
           <h1>IMCES</h1>
           <h6>Application for agronomists</h6>
         </div>
-        <div class="col col-md-3 float-right">
-          <div class="media shadow p-3">
+        <div class="col">
+        </div>
+        <div class="col col-md-3 float-right" style="background-color: rgba(255,255,255,0.9); border-radius: 10px">
+          <div class="media p-3">
             <img src="static/img/user_icon.png" class="mr-3" style="width: 64px; height: 64px;" alt="=(">
             <div class="media-body">
               <h5 class="mt-0">Username</h5>
@@ -30,8 +32,8 @@
       <form class="form-group mt-4" action="get_info" method="get">
         <div class="row">
           <div class="col col-md-4">
-            <label for="station_number">Select zond number:</label>
-            <select class="form-control" id="station_number">
+            <label for="station_number">Select station number:</label>
+            <select class="form-control" name="station_number" id="station_number">
               <option>32</option>
               <option>33</option>
               <option>36</option>

@@ -56,6 +56,23 @@ def statistics():
 	if not 'username' in session:
 		return redirect(url_for('login'), 302)
 
+	station_number = request.args.get('station_number')
+	start_date = request.args.get('start_date')
+	end_date = request.args.get('end_date')
+
+	sd = list(map(int, start_date.split('-')))
+	ed = list(map(int, end_date.split('-')))
+
+	start_date = int(datetime.datetime(sd[0], sd[1], sd[2], 0, 0).timestamp())
+	end_date = int(datetime.datetime(ed[0], ed[1], ed[2], 0, 0).timestamp())
+
+	print(station_number, start_date, end_date)
+
+	if not station_number or not start_date or not end_date:
+		abort(400)
+
+	station_number = "600000" + station_number
+
 	conn = mysql.connector.connect(
          user='Fomin',
          password='VvbrKYKj',
@@ -65,7 +82,10 @@ def statistics():
 
 	cursor = conn.cursor()
 
-	query = "show tables;"
+	# query = "show tables;"
+	query = "select * from `{0}` where time between '{1}' and '{2}';".format(
+							station_number, start_date, end_date)
+	print(query)
 	cursor.execute(query)
 
 	result = []
