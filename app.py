@@ -98,14 +98,15 @@ def statistics():
 	cursor = conn.cursor()
 
 	# query = "show tables;"
-	query = "select * from `{0}` where time between '{1}' and '{2}';".format(
-							station_number, start_date, end_date)
+	query = ("select time, `1000`, `1005`, `1010`, `1015`, `1020`, `1030`, `1040`, `1050`, `1060` " +
+			 " from `{0}` where time between '{1}' and '{2}';".format(
+							station_number, start_date, end_date))
 	print(query)
 	cursor.execute(query)
 
 	result = []
 	for line in cursor:
-		result.append([datetime.datetime.fromtimestamp(line[1]).date()] + list(line[2:10]))
+		result.append(tuple([datetime.datetime.fromtimestamp(line[0]).date()] + list(line[1:9])))
 		# print(line)
 
 	res = np.array(result)
@@ -123,22 +124,16 @@ def statistics():
 			i += 1
 			if i == len(res):
 				break
-		# print(temp)
 
-		temp = pd.DataFrame(np.array(temp))
-		print(temp.head())
-		print(temp.describe(include='all'))
+		temp = np.array(temp)
+		temp_frame = pd.DataFrame(data=temp, dtype=np.float)
+
+		print(temp_frame.head())
+		print(temp_frame.describe(include='all'))
+
 		temp = []
 
-
-	# resframe = pd.DataFrame(res)
-
-	# print(resframe.head())
-	# print(resframe.describe())
-	# print(resframe.describe()[1][3])
-
 	conn.close()
-
 	return render_template('station_info.html')
 
 
