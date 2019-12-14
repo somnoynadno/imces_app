@@ -9,10 +9,16 @@ from flask import url_for
 import datetime
 import mysql.connector
 
+# runtime fix
+import matplotlib
+matplotlib.use('Agg')
+
 import numpy as np
 import pandas as pd
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import datetime
+
+from random import randint
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -112,6 +118,8 @@ def statistics():
 	res = np.array(result)
 
 	temp = []
+	means = []
+	dates = []
 	i = 0
 	result_string = ""
 	while i < len(res)-1:
@@ -125,16 +133,19 @@ def statistics():
 			if i == len(res):
 				break
 			
-
 		temp = np.array(temp)
 		temp_frame = pd.DataFrame(data=temp, dtype=np.float)
+		last_day = temp
 
 		print(temp_frame.head())
 		print(temp_frame.describe(include='all'))
 
 		mean_t = temp_frame.describe(include='all').as_matrix()[1]
-		min_t = temp_frame.describe(include='all').as_matrix()[3]
-		max_t = temp_frame.describe(include='all').as_matrix()[7]
+		min_t  = temp_frame.describe(include='all').as_matrix()[3]
+		max_t  = temp_frame.describe(include='all').as_matrix()[7]
+
+		means.append(mean_t)
+		dates.append(date)
 
 		result_string += "<tr><td><h6>" + str(date) + "</h6></td>" + "<td></td>"*9 + "</tr>"
 
@@ -169,11 +180,32 @@ def statistics():
 		for h, elem in zip(heights, line):
 			last_mes_string += "Result on " + str(h) + "sm: " + str(round(elem, 2)) + "<br>"
 
+	fig = plt.figure()
+	ax = plt.axes()
+
+	means = np.array(means).transpose()
+	for j in range(9):
+		ax.plot(dates, means[j])
+
+	means_file = 'static/img/temp/' + str(randint(10000, 99999)) + '.png'
+	fig.savefig(means_file)
+
+	fig_last_day = plt.figure()
+	ax_last_day = plt.axes()
+
+	for line in last_day.transpose():
+		ax_last_day.plot([i for i in range(len(last_day))], line)
+
+
+	last_day_file = 'static/img/temp/' + str(randint(10000, 99999)) + '.png'
+	fig_last_day.savefig(last_day_file)
+
 	conn.close()
 	return render_template('station_info.html', results=result_string,
 							last_measurement=last_mes_string, 
 							station_number=station_number_default,
-							date=start_date_default + " - " + end_date_default)
+							date=start_date_default + " - " + end_date_default,
+							means_file=means_file, last_day_file=last_day_file)
 
 
 if __name__ == '__main__':
