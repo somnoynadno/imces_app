@@ -9,7 +9,10 @@ from flask import url_for
 import datetime
 import mysql.connector
 
+import numpy as np
+import pandas as pd
 import matplotlib as plt
+import datetime
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -90,8 +93,37 @@ def statistics():
 
 	result = []
 	for line in cursor:
-		result.append(line)
-		print(line)
+		result.append([datetime.datetime.fromtimestamp(line[1]).date()] + list(line[2:10]))
+		# print(line)
+
+	res = np.array(result)
+	# print(res)
+
+	temp = []
+	i = 0
+	while i < len(res):
+		date = res[i][0]
+		print(date)
+		temp.append(res[i][1:])
+		i += 1
+		while res[i][0] == date:
+			temp.append(res[i][1:])
+			i += 1
+			if i == len(res):
+				break
+		# print(temp)
+
+		temp = pd.DataFrame(np.array(temp))
+		print(temp.head())
+		print(temp.describe(include='all'))
+		temp = []
+
+
+	# resframe = pd.DataFrame(res)
+
+	# print(resframe.head())
+	# print(resframe.describe())
+	# print(resframe.describe()[1][3])
 
 	conn.close()
 
