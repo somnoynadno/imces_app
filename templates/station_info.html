@@ -10,13 +10,13 @@
 
     <title>imces app</title>
   </head>
-  <body style="background-image: url(static/img/main_background_opacity.jpg); background-size: 100%;">
+  <body style="background-image: url(static/img/main_background.jpg); background-size: 100%;">
     <div class="container">
       <div class="row mt-1">
-        <div class="col col-md-3 pt-2 float-left" style="background-color: rgba(255,255,255,0.9); border-radius: 10px;">
+        <a href ="/" class="col col-md-3 pt-2 float-left stretched-link" style="background-color: rgba(255,255,255,0.9); border-radius: 10px; text-decoration: none; color: black;">
           <h1>IMCES</h1>
           <h6>Application for agronomists</h6>
-        </div>
+        </a>
         <div class="col">
         </div>
         <div class="col col-md-3 float-right" style="background-color: rgba(255,255,255,0.9); border-radius: 10px;">
@@ -46,14 +46,23 @@
         <div class="col col-md-3">
           <div class="collapse multi-collapse" id="collapse_last_measurement">
             <div class="card card-body">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                <h5>Температура</h5><br>
+                Отметка 0 см. -1.12<br>
+                Отметка 5 см. -1.05<br>
+                Отметка 10 см. -0.94<br>
+                Отметка 15 см. -0.81<br>
+                Отметка 20 см. -0.67<br>
+                Отметка 30 см. -0.27<br>
+                Отметка 40 см. 0.12<br>
+                Отметка 50 см. 0.71<br>
+                Отметка 60 см. 1.15<br>
             </div>
           </div>
         </div>
         <div class="col">
           <div class="collapse multi-collapse" id="collapse_statistics">
             <div class="card card-body">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+              <img src="static/img/example.png" style="width: 50%; height: 50%;">
             </div>
           </div>
         </div>
@@ -62,7 +71,26 @@
         <div class="col">
           <div class="collapse multi-collapse" id="collapse_full_log">
             <div class="card card-body">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+               <table style="width:100%">
+                <tr>
+                  <th>Date</th>
+                  <th>Min</th>
+                  <th>Max</th>
+                  <th>Average</th>
+                </tr>
+                <tr>
+                  <td>10.12.2019</td>
+                  <td>-1</td>
+                  <td>3</td>
+                  <td>2</td>
+                </tr>
+                <tr>
+                  <td>11.12.2019</td>
+                  <td>-2</td>
+                  <td>2</td>
+                  <td>1</td>
+                </tr>
+              </table> 
             </div>
           </div>
         </div>

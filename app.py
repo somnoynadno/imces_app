@@ -32,11 +32,23 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-		username = request.form.get('username')
-		password = request.form.get('password')
+		username = str(request.form.get('username'))
+		password = str(request.form.get('password'))
 
 		if not username or not password:
 			return "Wrong credentials", 400
+
+		try:
+			conn = mysql.connector.connect(
+		         user=username,
+		         password=password,
+		         host='imces.ru',
+		         port=22303,
+		         database='apik3')
+			conn.close()
+			
+		except Exception:
+			return "No such user or incorrect password", 400
 
 		session['username'] = username
 
