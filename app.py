@@ -97,7 +97,6 @@ def statistics():
 
 	cursor = conn.cursor()
 
-	# query = "show tables;"
 	query = ("select time, `1000`, `1005`, `1010`, `1015`, `1020`, `1030`, `1040`, `1050`, `1060` " +
 			 " from `{0}` where time between '{1}' and '{2}';".format(
 							station_number, start_date, end_date))
@@ -106,14 +105,14 @@ def statistics():
 
 	result = []
 	for line in cursor:
-		result.append(tuple([datetime.datetime.fromtimestamp(line[0]).date()] + list(line[1:9])))
+		result.append(tuple([datetime.datetime.fromtimestamp(line[0]).date()] + list(line[1:10])))
 		# print(line)
 
 	res = np.array(result)
-	# print(res)
 
 	temp = []
 	i = 0
+	result_string = ""
 	while i < len(res):
 		date = res[i][0]
 		print(date)
@@ -131,10 +130,34 @@ def statistics():
 		print(temp_frame.head())
 		print(temp_frame.describe(include='all'))
 
+		mean_t = temp_frame.describe(include='all').as_matrix()[1]
+		min_t = temp_frame.describe(include='all').as_matrix()[3]
+		max_t = temp_frame.describe(include='all').as_matrix()[7]
+
+		result_string += "<tr><td><h6>" + str(date) + "</h6></td>" + "<td></td>"*9 + "</tr>"
+
+		result_string += "<tr>"
+		result_string += "<td>" + "mean T, °C" + "</td>"
+		for elem in mean_t:
+			result_string += "<td>" + str(round(elem, 2)) + "</td>"
+		result_string += "</tr>"
+
+		result_string += "<tr>"
+		result_string += "<td>" + "min T, °C" + "</td>"
+		for elem in min_t:
+			result_string += "<td>" + str(round(elem, 2)) + "</td>"
+		result_string += "</tr>"
+
+		result_string += "<tr>"
+		result_string += "<td>" + "max T, °C" + "</td>"
+		for elem in max_t:
+			result_string += "<td>" + str(round(elem, 2)) + "</td>"
+		result_string += "</tr>"
+
 		temp = []
 
 	conn.close()
-	return render_template('station_info.html')
+	return render_template('station_info.html', results=result_string)
 
 
 if __name__ == '__main__':

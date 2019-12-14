@@ -10,7 +10,7 @@
 
     <title>imces app</title>
   </head>
-  <body style="background-image: url(static/img/main_background.jpg); background-size: 100%;">
+  <body style="background-image: url(static/img/main_background.jpg); background-size: 100%; background-attachment: fixed">
     <div class="container">
       <div class="row mt-1">
         <a href ="/" class="col col-md-3 pt-2 float-left stretched-link" style="background-color: rgba(255,255,255,0.9); border-radius: 10px; text-decoration: none; color: black;">
@@ -70,27 +70,28 @@
       <div class="row">
         <div class="col">
           <div class="collapse multi-collapse" id="collapse_full_log">
-            <div class="card card-body">
-               <table style="width:100%">
-                <tr>
-                  <th>Date</th>
-                  <th>Min</th>
-                  <th>Max</th>
-                  <th>Average</th>
-                </tr>
-                <tr>
-                  <td>10.12.2019</td>
-                  <td>-1</td>
-                  <td>3</td>
-                  <td>2</td>
-                </tr>
-                <tr>
-                  <td>11.12.2019</td>
-                  <td>-2</td>
-                  <td>2</td>
-                  <td>1</td>
-                </tr>
-              </table> 
+            <div class="card card-body mb-4">
+               <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">date/result</th>
+                    <th scope="col">0 sm</th>
+                    <th scope="col">5 sm</th>
+                    <th scope="col">10 sm</th>
+                    <th scope="col">15 sm</th>
+                    <th scope="col">20 sm</th>
+                    <th scope="col">30 sm</th>
+                    <th scope="col">40 sm</th>
+                    <th scope="col">50 sm</th>
+                    <th scope="col">60 sm</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                  {{results | safe}}
+
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
