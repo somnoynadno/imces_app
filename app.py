@@ -83,15 +83,15 @@ def statistics():
 	cursor = conn.cursor()
 
 	# query = "show tables;"
-	# query = "select * from `{0}` where time between '{1}' and '{2}';".format(
-	# 						station_number, start_date, end_date)
-	# print(query)
-	# cursor.execute(query)
+	query = "select * from `{0}` where time between '{1}' and '{2}';".format(
+							station_number, start_date, end_date)
+	print(query)
+	cursor.execute(query)
 
-	# result = []
-	# for line in cursor:
-	# 	result.append(line)
-	# 	print(line)
+	result = []
+	for line in cursor:
+		result.append(line)
+		print(line)
 
 	conn.close()
 
@@ -99,4 +99,4 @@ def statistics():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
