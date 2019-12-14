@@ -60,7 +60,7 @@ def login():
 
 		return redirect(url_for('index'), 302)
 	else:
-		return render_template('login.html', username=session['username'])
+		return render_template('login.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -147,7 +147,7 @@ def statistics():
 		means.append(mean_t)
 		dates.append(str(date)[5:])
 
-		result_string += "<tr><td><h6>" + str(date) + "</h6></td>" + "<td></td>"*9 + "</tr>"
+		result_string += "<tr><td><b>" + str(date) + "</b></td>" + "<td></td>"*9 + "</tr>"
 
 		result_string += "<tr>"
 		result_string += "<td>" + "mean T, °C" + "</td>"
@@ -169,7 +169,7 @@ def statistics():
 
 		temp = []
 
-	last_mes_query = ("select `1000`, `1005`, `1010`, `1015`, `1020`, `1030`, `1040`, `1050`, `1060` " +
+	last_mes_query = ("select time, `1000`, `1005`, `1010`, `1015`, `1020`, `1030`, `1040`, `1050`, `1060` " +
 			 		  " from `{0}` order by time desc limit 1;".format(station_number))
 
 	cursor.execute(last_mes_query)
@@ -177,8 +177,10 @@ def statistics():
 
 	last_mes_string = "<h5>Temperature</h5>"
 	for line in cursor:
-		for h, elem in zip(heights, line):
-			last_mes_string += "Result on " + str(h) + "sm: " + str(round(elem, 2)) + "<br>"
+		for h, elem in zip(heights, line[1:]):
+			last_mes_string += "Result on " + str(h) + "sm:" + str(round(elem, 2)) + "<br>"
+		collected_date = datetime.datetime.fromtimestamp(line[0])
+		last_mes_string += "<hr> Collected at: <br> " + str(collected_date.date()) + " " + str(collected_date.time())
 
 	fig = plt.figure()
 	ax = plt.axes()
