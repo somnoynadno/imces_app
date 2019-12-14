@@ -32,7 +32,7 @@ def index():
 	if not 'username' in session:
 		return redirect(url_for('login'), 302)
 	else:
-		return render_template('index.html')
+		return render_template('index.html', username=session['username'])
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -60,7 +60,7 @@ def login():
 
 		return redirect(url_for('index'), 302)
 	else:
-		return render_template('login.html')
+		return render_template('login.html', username=session['username'])
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -205,7 +205,8 @@ def statistics():
 							last_measurement=last_mes_string, 
 							station_number=station_number_default,
 							date=start_date_default + " - " + end_date_default,
-							means_file=means_file, last_day_file=last_day_file)
+							means_file=means_file, last_day_file=last_day_file,
+							username=session['username'])
 
 
 if __name__ == '__main__':

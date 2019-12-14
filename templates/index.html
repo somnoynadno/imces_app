@@ -10,25 +10,25 @@
 
     <title>imces app</title>
   </head>
-  <body style="background-image: url(static/img/main_background.jpg); background-size: 100%;">
+  <body style="background-image: url(static/img/main_background.jpg); background-size: cover;">
     <div class="container h-100">
-      <div class="row mt-1 mb-4">
-        <a href ="/" class="col col-md-3 pt-2 float-left stretched-link" style="background-color: rgba(255,255,255,0.9); border-radius: 10px; text-decoration: none; color: black;">
+      <div class="row mt-1 mb-4 p-2 row justify-content-between">
+        <a href ="/" class="col col-md-3 pt-2 mb-2 mr-4 stretched-link" style="background-color: rgba(255,255,255,0.9); border-radius: 10px; text-decoration: none; color: black;">
           <h1>IMCES</h1>
           <h6>Application for agronomists</h6>
         </a>
-        <div class="col">
-        </div>
-        <div class="col col-md-3 float-right" style="background-color: rgba(255,255,255,0.9); border-radius: 10px">
+        <!-- <div class="col">
+        </div> -->
+        <div class="col col-md-3 mb-2" style="background-color: rgba(255,255,255,0.9); border-radius: 10px">
           <div class="media p-3">
             <img src="static/img/user_icon.png" class="mr-3" style="width: 64px; height: 64px;" alt="=(">
             <div class="media-body">
-              <h5 class="mt-0">Username</h5>
+              <h5 class="mt-0">{{username}}</h5>
               <a href='/'>Go to profile</a>
             </div>
           </div>
         </div>
-        <div class="clearfix"></div>
+        <!-- <div class="clearfix"></div> -->
       </div>
       <form class="form-group mt-4" action="get_info" method="get">
         <div class="row justify-content-center">
