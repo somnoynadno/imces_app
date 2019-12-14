@@ -145,7 +145,7 @@ def statistics():
 		max_t  = temp_frame.describe(include='all').as_matrix()[7]
 
 		means.append(mean_t)
-		dates.append(date)
+		dates.append(str(date)[5:])
 
 		result_string += "<tr><td><h6>" + str(date) + "</h6></td>" + "<td></td>"*9 + "</tr>"
 
@@ -186,6 +186,9 @@ def statistics():
 	means = np.array(means).transpose()
 	for j in range(9):
 		ax.plot(dates, means[j])
+		plt.xticks(dates, rotation='vertical')
+
+	fig.show()
 
 	means_file = 'static/img/temp/' + str(randint(10000, 99999)) + '.png'
 	fig.savefig(means_file)
@@ -200,13 +203,16 @@ def statistics():
 	last_day_file = 'static/img/temp/' + str(randint(10000, 99999)) + '.png'
 	fig_last_day.savefig(last_day_file)
 
+	# beautify output
+	last_day = ".".join(dates[::-1][0].split('-')[::-1])
+
 	conn.close()
 	return render_template('station_info.html', results=result_string,
 							last_measurement=last_mes_string, 
 							station_number=station_number_default,
 							date=start_date_default + " - " + end_date_default,
 							means_file=means_file, last_day_file=last_day_file,
-							username=session['username'])
+							username=session['username'], last_day=last_day)
 
 
 if __name__ == '__main__':
