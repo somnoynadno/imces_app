@@ -71,22 +71,22 @@ def statistics():
 	if not 'username' in session:
 		return redirect(url_for('login'), 302)
 
-	station_number = request.args.get('station_number')
-	start_date = request.args.get('start_date')
-	end_date = request.args.get('end_date')
+	station_number_default = request.args.get('station_number')
+	start_date_default = request.args.get('start_date')
+	end_date_default = request.args.get('end_date')
 
-	sd = list(map(int, start_date.split('-')))
-	ed = list(map(int, end_date.split('-')))
+	if not station_number_default or not start_date_default or not end_date_default:
+		abort(400)
+
+	sd = list(map(int, start_date_default.split('-')))
+	ed = list(map(int, end_date_default.split('-')))
 
 	start_date = int(datetime.datetime(sd[0], sd[1], sd[2], 0, 0).timestamp())
 	end_date = int(datetime.datetime(ed[0], ed[1], ed[2], 0, 0).timestamp())
 
+	station_number = "600000" + station_number_default
+
 	print(station_number, start_date, end_date)
-
-	if not station_number or not start_date or not end_date:
-		abort(400)
-
-	station_number = "600000" + station_number
 
 	conn = mysql.connector.connect(
          user='Fomin',
@@ -100,6 +100,7 @@ def statistics():
 	query = ("select time, `1000`, `1005`, `1010`, `1015`, `1020`, `1030`, `1040`, `1050`, `1060` " +
 			 " from `{0}` where time between '{1}' and '{2}';".format(
 							station_number, start_date, end_date))
+
 	print(query)
 	cursor.execute(query)
 
@@ -113,7 +114,7 @@ def statistics():
 	temp = []
 	i = 0
 	result_string = ""
-	while i < len(res):
+	while i < len(res)-1:
 		date = res[i][0]
 		print(date)
 		temp.append(res[i][1:])
@@ -123,6 +124,7 @@ def statistics():
 			i += 1
 			if i == len(res):
 				break
+			
 
 		temp = np.array(temp)
 		temp_frame = pd.DataFrame(data=temp, dtype=np.float)
@@ -156,8 +158,22 @@ def statistics():
 
 		temp = []
 
+	last_mes_query = ("select `1000`, `1005`, `1010`, `1015`, `1020`, `1030`, `1040`, `1050`, `1060` " +
+			 		  " from `{0}` order by time desc limit 1;".format(station_number))
+
+	cursor.execute(last_mes_query)
+	heights = [0, 5, 10, 15, 20, 30, 40, 50, 60]
+
+	last_mes_string = "<h5>Temperature</h5>"
+	for line in cursor:
+		for h, elem in zip(heights, line):
+			last_mes_string += "Result on " + str(h) + "sm: " + str(round(elem, 2)) + "<br>"
+
 	conn.close()
-	return render_template('station_info.html', results=result_string)
+	return render_template('station_info.html', results=result_string,
+							last_measurement=last_mes_string, 
+							station_number=station_number_default,
+							date=start_date_default + " - " + end_date_default)
 
 
 if __name__ == '__main__':

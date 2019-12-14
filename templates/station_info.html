@@ -32,8 +32,8 @@
       <div class="information mt-4" style="background-color: rgba(255,255,255,0.9); border-radius: 10px;">
         <div class="row justify-content-center">
           <div class="col text-center">
-            <h1>Report for the station (number)</h1>
-            <h5>date1 - date2</h5>
+            <h1>Report for the station {{station_number}}</h1>
+            <h5>{{date}}</h5>
           </div>
         </div>
         <div class="row justify-content-center p-2">
@@ -46,16 +46,7 @@
         <div class="col col-md-3">
           <div class="collapse multi-collapse" id="collapse_last_measurement">
             <div class="card card-body">
-                <h5>Температура</h5><br>
-                Отметка 0 см. -1.12<br>
-                Отметка 5 см. -1.05<br>
-                Отметка 10 см. -0.94<br>
-                Отметка 15 см. -0.81<br>
-                Отметка 20 см. -0.67<br>
-                Отметка 30 см. -0.27<br>
-                Отметка 40 см. 0.12<br>
-                Отметка 50 см. 0.71<br>
-                Отметка 60 см. 1.15<br>
+                {{last_measurement | safe}}
             </div>
           </div>
         </div>
