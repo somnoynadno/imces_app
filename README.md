@@ -21,9 +21,11 @@
 
 2. `cd imces_app.git` 
 
-3. `pip3 install -r requirements.txt`
+3. `mkdir static/img/temp`
 
-4. `python3 app.py`
+4. `pip3 install -r requirements.txt`
+
+5. `python3 app.py`
 
 ### Windows
 
@@ -33,10 +35,12 @@
 
 2. `cd imces_app.git` 
 
-3. `pip install -r requirements.txt`
+3. `mkdir static/img/temp`
 
-4. `python app.py`
+4. `pip install -r requirements.txt`
+
+5. `python app.py`
 
 ## Презентация решения
 
-https://docs.google.com/presentation/d/1QiZgzN45r5J_gsEFgmC4ggcRvs8GGEWaE75--Z1eJIA/edit?usp=sharing
+Будет выложена позже
