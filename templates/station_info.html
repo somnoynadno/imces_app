@@ -24,7 +24,7 @@
             <img src="static/img/user_icon.png" class="mr-3" style="width: 64px; height: 64px;" alt="=(">
             <div class="media-body">
               <h5 class="mt-0">{{username}}</h5>
-              <a href='/'>Go to profile</a>
+              <a href='/'>Мой профиль</a>
             </div>
           </div>
         </div>
@@ -32,14 +32,14 @@
       <div class="information mt-4" style="background-color: rgba(255,255,255,0.9); border-radius: 10px;">
         <div class="row justify-content-center">
           <div class="col text-center">
-            <h1>Report for the station {{station_number}}</h1>
-            <h5>{{date}}</h5>
+            <h1>Отчёт для зонда №{{station_number}}</h1>
+            <h5>за период {{date}}</h5>
           </div>
         </div>
         <div class="row justify-content-center p-2">
-          <button class="btn btn-primary m-1" data-toggle="collapse" href="#collapse_last_measurement" role="button" aria-expanded="false" aria-controls="collapse_last_measurement">Show the last measurement</button>
-          <button class="btn btn-primary m-1" type="button" data-toggle="collapse" data-target="#collapse_statistics" aria-expanded="false" aria-controls="collapse_statistics">View the dynamics of changes</button>
-          <button class="btn btn-primary m-1" type="button" data-toggle="collapse" data-target="#collapse_full_log" aria-expanded="false" aria-controls="collapse_full_log">Get full mesurement log</button>
+          <button class="btn btn-primary m-1" data-toggle="collapse" href="#collapse_last_measurement" role="button" aria-expanded="false" aria-controls="collapse_last_measurement">Показать последнее измерение</button>
+          <button class="btn btn-primary m-1" type="button" data-toggle="collapse" data-target="#collapse_statistics" aria-expanded="false" aria-controls="collapse_statistics">Динамика изменений температуры</button>
+          <button class="btn btn-primary m-1" type="button" data-toggle="collapse" data-target="#collapse_full_log" aria-expanded="false" aria-controls="collapse_full_log">Посмотреть полный отчёт</button>
         </div>
       </div>
       <div class="row">
@@ -55,11 +55,11 @@
             <div class="card card-body">
               <div class="row">
                 <div class="col col-md-6">
-                  <h5>T° changes for selected period:</h5>
+                  <h5>Изменение t° за выбранный период:</h5>
                   <img class="img-fluid mb-2" src="{{means_file}}">
                 </div>
                 <div class="col col-md-6">
-                  <h5>T° changes for {{last_day}}:</h5>
+                  <h5>Изменение t° за {{last_day}}:</h5>
                   <img class="img-fluid mb-2" src="{{last_day_file}}">
                 </div>
               </div>
@@ -74,16 +74,16 @@
                <table class="table table-responsive">
                 <thead>
                   <tr>
-                    <th scope="col">date/result</th>
-                    <th scope="col">0 sm</th>
-                    <th scope="col">5 sm</th>
-                    <th scope="col">10 sm</th>
-                    <th scope="col">15 sm</th>
-                    <th scope="col">20 sm</th>
-                    <th scope="col">30 sm</th>
-                    <th scope="col">40 sm</th>
-                    <th scope="col">50 sm</th>
-                    <th scope="col">60 sm</th>
+                    <th scope="col">дата/результат</th>
+                    <th scope="col">0 см</th>
+                    <th scope="col">5 см</th>
+                    <th scope="col">10 см</th>
+                    <th scope="col">15 см</th>
+                    <th scope="col">20 см</th>
+                    <th scope="col">30 см</th>
+                    <th scope="col">40 см</th>
+                    <th scope="col">50 см</th>
+                    <th scope="col">60 см</th>
                   </tr>
                 </thead>
                 <tbody>
