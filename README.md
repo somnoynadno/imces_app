@@ -24,3 +24,19 @@
 3. `pip3 install -r requirements.txt`
 
 4. `python3 app.py`
+
+### Windows
+
+Убеждаемся в установленном git, python и pip на своей машине. Далее открывает Git Bash и прописываем:
+
+1. `git clone https://github.com/somnoynadno/imces_app.git` 
+
+2. `cd imces_app.git` 
+
+3. `pip install -r requirements.txt`
+
+4. `python app.py`
+
+## Презентация решения
+
+https://docs.google.com/presentation/d/1QiZgzN45r5J_gsEFgmC4ggcRvs8GGEWaE75--Z1eJIA/edit?usp=sharing
