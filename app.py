@@ -28,7 +28,6 @@ app.config['SECRET_KEY'] = 'I hope this enough to be secret'
 
 @app.route('/', methods=['GET'])
 def index():
-	# TODO: main page
 	if not 'username' in session:
 		return redirect(url_for('login'), 302)
 	else:
@@ -44,6 +43,7 @@ def login():
 		if not username or not password:
 			return "Wrong credentials", 400
 
+		# user must exist in database
 		try:
 			conn = mysql.connector.connect(
 		         user=username,
@@ -63,15 +63,6 @@ def login():
 		return render_template('login.html')
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-	# TODO: return register page
-	if not 'username' in session:
-		return redirect(url_for('login'), 302)
-
-	return "Register"
-
-
 @app.route('/get_info', methods=['GET'])
 def statistics():
 	if not 'username' in session:
@@ -84,22 +75,35 @@ def statistics():
 	if not station_number_default or not start_date_default or not end_date_default:
 		abort(400)
 
-	sd = list(map(int, start_date_default.split('-')))
-	ed = list(map(int, end_date_default.split('-')))
+	# date -> integer parsing
+	try:
+		sd = list(map(int, start_date_default.split('-')))
+		ed = list(map(int, end_date_default.split('-')))
+	except ValueError:
+		abort(400)
 
-	start_date = int(datetime.datetime(sd[0], sd[1], sd[2], 0, 0).timestamp())
-	end_date = int(datetime.datetime(ed[0], ed[1], ed[2], 0, 0).timestamp())
+	try:
+		start_date = int(datetime.datetime(sd[0], sd[1], sd[2], 0, 0).timestamp())
+		end_date = int(datetime.datetime(ed[0], ed[1], ed[2], 0, 0).timestamp())
+	except ValueError:
+		abort(400)
 
+	if start_date > end_date:
+		return "The end date must be less than the start date", 400
+
+	stations = ("32", "33", "36", "37")
+	if station_number_default not in stations:
+		return "Invalid station number", 400
+	
+	# valid station name in MySQL
 	station_number = "600000" + station_number_default
 
-	print(station_number, start_date, end_date)
-
 	conn = mysql.connector.connect(
-         user='Fomin',
-         password='VvbrKYKj',
-         host='imces.ru',
-         port=22303,
-         database='apik3')
+				user='Fomin',
+				password='VvbrKYKj',
+				host='imces.ru',
+				port=22303,
+				database='apik3')
 
 	cursor = conn.cursor()
 
@@ -107,27 +111,30 @@ def statistics():
 			 " from `{0}` where time between '{1}' and '{2}';".format(
 							station_number, start_date, end_date))
 
-	print(query)
 	cursor.execute(query)
 
 	result = []
 	for line in cursor:
 		result.append(tuple([datetime.datetime.fromtimestamp(line[0]).date()] + list(line[1:10])))
-		# print(line)
 
+	# array of measurements for each timestamp
 	res = np.array(result)
 
-	temp = []
+	i = 0
+	temp  = []
 	means = []
 	dates = []
-	i = 0
 	result_string = ""
+
+	# store data for each day in temp variable
 	while i < len(res)-1:
+		# get current date
 		date = res[i][0]
-		print(date)
 		temp.append(res[i][1:])
 		i += 1
+
 		while res[i][0] == date:
+			# append same date results
 			temp.append(res[i][1:])
 			i += 1
 			if i == len(res):
@@ -137,9 +144,7 @@ def statistics():
 		temp_frame = pd.DataFrame(data=temp, dtype=np.float)
 		last_day = temp
 
-		print(temp_frame.head())
-		print(temp_frame.describe(include='all'))
-
+		# count this values for each height in this day
 		mean_t = temp_frame.describe(include='all').as_matrix()[1]
 		min_t  = temp_frame.describe(include='all').as_matrix()[3]
 		max_t  = temp_frame.describe(include='all').as_matrix()[7]
@@ -147,6 +152,7 @@ def statistics():
 		means.append(mean_t)
 		dates.append(str(date)[5:])
 
+		# making result string to render it in template
 		result_string += "<tr><td><b>" + str(date) + "</b></td>" + "<td></td>"*9 + "</tr>"
 
 		result_string += "<tr>"
@@ -167,8 +173,10 @@ def statistics():
 			result_string += "<td>" + str(round(elem, 2)) + "</td>"
 		result_string += "</tr>"
 
+		# ready to heandle next day
 		temp = []
 
+	# get the last measurement of the station
 	last_mes_query = ("select time, `1000`, `1005`, `1010`, `1015`, `1020`, `1030`, `1040`, `1050`, `1060` " +
 			 		  " from `{0}` order by time desc limit 1;".format(station_number))
 
@@ -179,28 +187,30 @@ def statistics():
 	for line in cursor:
 		for h, elem in zip(heights, line[1:]):
 			last_mes_string += "Result on " + str(h) + "sm:" + str(round(elem, 2)) + "<br>"
+
+		# put timestamp
 		collected_date = datetime.datetime.fromtimestamp(line[0])
 		last_mes_string += "<hr> Collected at: <br> " + str(collected_date.date()) + " " + str(collected_date.time())
 
 	fig = plt.figure()
 	ax = plt.axes()
 
+	# plot mean for each height by days
 	means = np.array(means).transpose()
 	for j in range(9):
 		ax.plot(dates, means[j])
 		plt.xticks(dates, rotation='vertical')
 
-	fig.show()
-
 	means_file = 'static/img/temp/' + str(randint(10000, 99999)) + '.png'
 	fig.savefig(means_file)
+
 
 	fig_last_day = plt.figure()
 	ax_last_day = plt.axes()
 
+	# plot temperatures for only last day
 	for line in last_day.transpose():
 		ax_last_day.plot([i for i in range(len(last_day))], line)
-
 
 	last_day_file = 'static/img/temp/' + str(randint(10000, 99999)) + '.png'
 	fig_last_day.savefig(last_day_file)
