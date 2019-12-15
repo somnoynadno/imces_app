@@ -43,4 +43,4 @@
 
 ## Презентация решения
 
-Будет выложена позже
+https://docs.google.com/presentation/d/1QiZgzN45r5J_gsEFgmC4ggcRvs8GGEWaE75--Z1eJIA/edit?usp=sharing
