@@ -195,6 +195,9 @@ def statistics():
 	fig = plt.figure()
 	ax = plt.axes()
 
+	ax.set_xlabel('time (day)')
+	ax.set_ylabel('temperature (°C)')
+
 	# plot mean for each height by days
 	means = np.array(means).transpose()
 	for j in range(9):
@@ -207,6 +210,9 @@ def statistics():
 
 	fig_last_day = plt.figure()
 	ax_last_day = plt.axes()
+
+	ax_last_day.set_xlabel('time (hours)')
+	ax_last_day.set_ylabel('temperature (°C)')
 
 	# plot temperatures for only last day
 	for line in last_day.transpose():
