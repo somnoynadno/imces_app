@@ -41,7 +41,7 @@ def login():
 		password = str(request.form.get('password'))
 
 		if not username or not password:
-			return "Wrong credentials", 400
+			return "Неверные данные учётной записи", 400
 
 		# user must exist in database
 		try:
@@ -54,7 +54,7 @@ def login():
 			conn.close()
 			
 		except Exception:
-			return "No such user or incorrect password", 400
+			return "Неверные логин или пароль", 400
 
 		session['username'] = username
 
@@ -89,11 +89,11 @@ def statistics():
 		abort(400)
 
 	if start_date > end_date:
-		return "The end date must be less than the start date", 400
+		return "Начальная дата отчёта должна быть меньше конечной", 400
 
 	stations = ("32", "33", "36", "37")
 	if station_number_default not in stations:
-		return "Invalid station number", 400
+		return "Неверный номер зонда", 400
 	
 	# valid station name in MySQL
 	station_number = "600000" + station_number_default
@@ -156,19 +156,19 @@ def statistics():
 		result_string += "<tr><td><b>" + str(date) + "</b></td>" + "<td></td>"*9 + "</tr>"
 
 		result_string += "<tr>"
-		result_string += "<td>" + "mean T, °C" + "</td>"
+		result_string += "<td>" + "средняя t, °C" + "</td>"
 		for elem in mean_t:
 			result_string += "<td>" + str(round(elem, 2)) + "</td>"
 		result_string += "</tr>"
 
 		result_string += "<tr>"
-		result_string += "<td>" + "min T, °C" + "</td>"
+		result_string += "<td>" + "min t, °C" + "</td>"
 		for elem in min_t:
 			result_string += "<td>" + str(round(elem, 2)) + "</td>"
 		result_string += "</tr>"
 
 		result_string += "<tr>"
-		result_string += "<td>" + "max T, °C" + "</td>"
+		result_string += "<td>" + "max t, °C" + "</td>"
 		for elem in max_t:
 			result_string += "<td>" + str(round(elem, 2)) + "</td>"
 		result_string += "</tr>"
@@ -183,14 +183,14 @@ def statistics():
 	cursor.execute(last_mes_query)
 	heights = [0, 5, 10, 15, 20, 30, 40, 50, 60]
 
-	last_mes_string = "<h5>Temperature</h5>"
+	last_mes_string = "<h5>Температура</h5>"
 	for line in cursor:
 		for h, elem in zip(heights, line[1:]):
-			last_mes_string += "Result on " + str(h) + "sm:" + str(round(elem, 2)) + "<br>"
+			last_mes_string += "Результат на " + str(h) + " см: " + str(round(elem, 2)) + "<br>"
 
 		# put timestamp
 		collected_date = datetime.datetime.fromtimestamp(line[0])
-		last_mes_string += "<hr> Collected at: <br> " + str(collected_date.date()) + " " + str(collected_date.time())
+		last_mes_string += "<hr> Данные за <br> " + str(collected_date.date()) + " " + str(collected_date.time())
 
 	fig = plt.figure()
 	ax = plt.axes()
@@ -216,7 +216,7 @@ def statistics():
 
 	# plot temperatures for only last day
 	for line in last_day.transpose():
-		ax_last_day.plot([i for i in range(len(last_day))], line)
+		ax_last_day.plot([i for i in range(1, len(last_day)+1)], line)
 
 	last_day_file = 'static/img/temp/' + str(randint(10000, 99999)) + '.png'
 	fig_last_day.savefig(last_day_file)
