@@ -148,6 +148,7 @@ def statistics():
 		last_day = temp
 
 		# count this values for each height in this day
+                # TODO: use values() insted of as_matrix()
 		mean_t = temp_frame.describe(include='all').as_matrix()[1]
 		min_t  = temp_frame.describe(include='all').as_matrix()[3]
 		max_t  = temp_frame.describe(include='all').as_matrix()[7]
