@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  imces_app:
+    build: ./
+    working_dir: /app
+    container_name: imces
+    restart: "always"
+    ports:
+      - "5000:5000"
