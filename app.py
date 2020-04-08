@@ -26,12 +26,15 @@ app.config['SESSION_TYPE'] = 'memcached'
 app.config['SECRET_KEY'] = 'I hope this enough to be secret'
 
 
+stations = ("32", "33", "34", "35", "36", "37")
+
+
 @app.route('/', methods=['GET'])
 def index():
 	if not 'username' in session:
 		return redirect(url_for('login'), 302)
 	else:
-		return render_template('index.html', username=session['username'])
+		return render_template('index.html', username=session['username'], stations=stations)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -57,6 +60,7 @@ def login():
 			return "Неверные логин или пароль", 400
 
 		session['username'] = username
+		session['password'] = password
 
 		return redirect(url_for('index'), 302)
 	else:
@@ -91,7 +95,6 @@ def statistics():
 	if start_date > end_date:
 		return "Начальная дата отчёта должна быть меньше конечной", 400
 
-	stations = ("32", "33", "36", "37")
 	if station_number_default not in stations:
 		return "Неверный номер зонда", 400
 	
@@ -99,8 +102,8 @@ def statistics():
 	station_number = "600000" + station_number_default
 
 	conn = mysql.connector.connect(
-				user='Fomin',
-				password='VvbrKYKj',
+				user=session['username'],
+				password=session['password'],
 				host='imces.ru',
 				port=22303,
 				database='apik3')
@@ -231,6 +234,15 @@ def statistics():
 							date=start_date_default + " - " + end_date_default,
 							means_file=means_file, last_day_file=last_day_file,
 							username=session['username'], last_day=last_day)
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+	session.pop('username', None)
+	session.pop('password', None)
+
+	return redirect(url_for('login'), 302)
+
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <title>imces app</title>
+    <title>imces</title>
   </head>
   <body style="background-image: url(static/img/main_background.jpg); background-size: cover;">
     <div class="container h-100">
@@ -24,7 +24,7 @@
             <img src="static/img/user_icon.png" class="mr-3" style="width: 64px; height: 64px;" alt="=(">
             <div class="media-body">
               <h5 class="mt-0">{{username}}</h5>
-              <a href='/'>Мой профиль</a>
+              <a href="/logout">Выйти</a>
             </div>
           </div>
         </div>
@@ -35,10 +35,11 @@
           <div class="col-md-4 shadow-lg text-center p-4 mb-4" style="background-color: rgba(255,255,255,0.9); border-radius: 12px">
             <label for="station_number"><h5>Выберите номер зонда:</h5></label>
             <select class="form-control" name="station_number" id="station_number">
-              <option>32</option>
-              <option>33</option>
-              <option>36</option>
-              <option>37</option>
+
+              {% for station in stations %}
+              <option> {{ station }} </option>
+              {% endfor %}
+
             </select>
             <label class="mt-4" for="start_date"><h5>Выберите начальную дату:</h5></label>
             <input type="date" class="form-control" id="start_date" name="start_date" placeholder="Date" required>
