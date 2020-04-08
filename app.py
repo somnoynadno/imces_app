@@ -26,7 +26,7 @@ app.config['SESSION_TYPE'] = 'memcached'
 app.config['SECRET_KEY'] = 'I hope this enough to be secret'
 
 
-stations = ("32", "33", "34", "35", "36", "37")
+stations = ("32", "33", "36", "37")
 
 
 @app.route('/', methods=['GET'])
@@ -34,7 +34,7 @@ def index():
 	if not 'username' in session:
 		return redirect(url_for('login'), 302)
 	else:
-		return render_template('index.html', username=session['username'], stations=stations)
+		return render_template('index.html', username="Фомин Д.А.", stations=stations)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -46,21 +46,21 @@ def login():
 		if not username or not password:
 			return "Неверные данные учётной записи", 400
 
-		# user must exist in database
-		try:
-			conn = mysql.connector.connect(
-		         user=username,
-		         password=password,
-		         host='imces.ru',
-		         port=22303,
-		         database='apik3')
-			conn.close()
+		# no authorization
+		# try:
+		# 	conn = mysql.connector.connect(
+		#          user=username,
+		#          password=password,
+		#          host='imces.ru',
+		#          port=22303,
+		#          database='apik3')
+		# 	conn.close()
 			
-		except Exception:
-			return "Неверные логин или пароль", 400
+		# except Exception:
+		# 	return "Неверные логин или пароль", 400
 
-		session['username'] = username
-		session['password'] = password
+		session['username'] = 'Fomin'
+		session['password'] = 'VvbrKYKj'
 
 		return redirect(url_for('index'), 302)
 	else:
@@ -148,7 +148,7 @@ def statistics():
 		last_day = temp
 
 		# count this values for each height in this day
-                # TODO: use values() insted of as_matrix()
+        # TODO: use values() insted of as_matrix()
 		mean_t = temp_frame.describe(include='all').as_matrix()[1]
 		min_t  = temp_frame.describe(include='all').as_matrix()[3]
 		max_t  = temp_frame.describe(include='all').as_matrix()[7]
@@ -234,7 +234,7 @@ def statistics():
 							station_number=station_number_default,
 							date=start_date_default + " - " + end_date_default,
 							means_file=means_file, last_day_file=last_day_file,
-							username=session['username'], last_day=last_day)
+							username="Фомин Д.А.", last_day=last_day)
 
 
 @app.route('/logout', methods=['GET'])
