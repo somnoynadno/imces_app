@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 import datetime
 
 from random import randint
+from pytz import timezone
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -118,7 +119,8 @@ def statistics():
 
 	result = []
 	for line in cursor:
-		result.append(tuple([datetime.datetime.fromtimestamp(line[0]).date()] + list(line[1:10])))
+		cur_datetime = datetime.datetime.fromtimestamp(line[0]).replace(tzinfo=timezone('UTC'))
+		result.append(tuple([cur_datetime.date()] + list(line[1:10])))
 
 	# array of measurements for each timestamp
 	res = np.array(result)
@@ -157,7 +159,7 @@ def statistics():
 		dates.append(str(date)[5:])
 
 		# making result string to render it in template
-		result_string += "<tr><td><b>" + str(date) + "</b></td>" + "<td></td>"*9 + "</tr>"
+		result_string += "<tr><td><b>" + date.strftime("%d.%m.%Y") + "</b></td>" + "<td></td>"*9 + "</tr>"
 
 		result_string += "<tr>"
 		result_string += "<td>" + "средняя t, °C" + "</td>"
@@ -193,14 +195,15 @@ def statistics():
 			last_mes_string += "Результат на " + str(h) + " см: " + str(round(elem, 2)) + "<br>"
 
 		# put timestamp
-		collected_date = datetime.datetime.fromtimestamp(line[0])
-		last_mes_string += "<hr> Данные за <br> " + str(collected_date.date()) + " " + str(collected_date.time())
+		collected_date = datetime.datetime.fromtimestamp(line[0]).replace(tzinfo=timezone('UTC'))
+		last_mes_string += ("<hr> Данные за <br> " + str(collected_date.date().strftime("%d.%m.%Y"))
+						+ " " + str(collected_date.time().strftime("%H:%M")))
 
 	fig = plt.figure()
 	ax = plt.axes()
 
-	ax.set_xlabel('time (day)')
-	ax.set_ylabel('temperature (°C)')
+	ax.set_xlabel('время (дни)')
+	ax.set_ylabel('температура (°C)')
 
 	# plot mean for each height by days
 	means = np.array(means).transpose()
@@ -215,8 +218,8 @@ def statistics():
 	fig_last_day = plt.figure()
 	ax_last_day = plt.axes()
 
-	ax_last_day.set_xlabel('time (hours)')
-	ax_last_day.set_ylabel('temperature (°C)')
+	ax_last_day.set_xlabel('время (часы)')
+	ax_last_day.set_ylabel('температура (°C)')
 
 	# plot temperatures for only last day
 	for line in last_day.transpose():
@@ -229,10 +232,12 @@ def statistics():
 	last_day = ".".join(dates[::-1][0].split('-')[::-1])
 
 	conn.close()
+
 	return render_template('station_info.html', results=result_string,
 							last_measurement=last_mes_string, 
 							station_number=station_number_default,
-							date=start_date_default + " - " + end_date_default,
+							date='.'.join(start_date_default.split('-')[::-1]) + 
+							" - " + '.'.join(end_date_default.split('-')[::-1]),
 							means_file=means_file, last_day_file=last_day_file,
 							username="Фомин Д.А.", last_day=last_day)
 
