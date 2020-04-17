@@ -21,58 +21,22 @@ import datetime
 from random import randint
 from pytz import timezone
 
+
 app = Flask(__name__, static_url_path='/static')
 
 app.config['SESSION_TYPE'] = 'memcached'
 app.config['SECRET_KEY'] = 'I hope this enough to be secret'
 
-
-stations = ("32", "33", "36", "37")
+stations = ("32", "33", "35", "36", "37")
 
 
 @app.route('/', methods=['GET'])
 def index():
-	if not 'username' in session:
-		return redirect(url_for('login'), 302)
-	else:
-		return render_template('index.html', username="Фомин Д.А.", stations=stations)
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	if request.method == 'POST':
-		username = str(request.form.get('username'))
-		password = str(request.form.get('password'))
-
-		if not username or not password:
-			return "Неверные данные учётной записи", 400
-
-		# no authorization
-		# try:
-		# 	conn = mysql.connector.connect(
-		#          user=username,
-		#          password=password,
-		#          host='imces.ru',
-		#          port=22303,
-		#          database='apik3')
-		# 	conn.close()
-			
-		# except Exception:
-		# 	return "Неверные логин или пароль", 400
-
-		session['username'] = 'Fomin'
-		session['password'] = 'VvbrKYKj'
-
-		return redirect(url_for('index'), 302)
-	else:
-		return render_template('login.html')
+	return render_template('index.html', stations=stations)
 
 
 @app.route('/get_info', methods=['GET'])
 def statistics():
-	if not 'username' in session:
-		return redirect(url_for('login'), 302)
-
 	station_number_default = request.args.get('station_number')
 	start_date_default = request.args.get('start_date')
 	end_date_default = request.args.get('end_date')
@@ -88,8 +52,14 @@ def statistics():
 		abort(400)
 
 	try:
-		start_date = int(datetime.datetime(sd[0], sd[1], sd[2], 0, 0).timestamp())
-		end_date = int(datetime.datetime(ed[0], ed[1], ed[2], 0, 0).timestamp())
+		start_date = datetime.datetime(sd[0], sd[1], sd[2], 0, 0)
+		end_date = datetime.datetime(ed[0], ed[1], ed[2], 0, 0)
+
+		if start_date == end_date:
+			end_date += datetime.timedelta(days=1)
+
+		start_date = int(start_date.timestamp())
+		end_date = int(end_date.timestamp())
 	except ValueError:
 		abort(400)
 
@@ -103,9 +73,9 @@ def statistics():
 	station_number = "600000" + station_number_default
 
 	conn = mysql.connector.connect(
-				user=session['username'],
-				password=session['password'],
-				host='imces.ru',
+				user='public',
+				password='StrongPassword123',
+				host='agropogoda.com',
 				port=22303,
 				database='apik3')
 
@@ -150,7 +120,6 @@ def statistics():
 		last_day = temp
 
 		# count this values for each height in this day
-        # TODO: use values() insted of as_matrix()
 		mean_t = temp_frame.describe(include='all').as_matrix()[1]
 		min_t  = temp_frame.describe(include='all').as_matrix()[3]
 		max_t  = temp_frame.describe(include='all').as_matrix()[7]
@@ -238,17 +207,8 @@ def statistics():
 							station_number=station_number_default,
 							date='.'.join(start_date_default.split('-')[::-1]) + 
 							" - " + '.'.join(end_date_default.split('-')[::-1]),
-							means_file=means_file, last_day_file=last_day_file,
-							username="Фомин Д.А.", last_day=last_day)
-
-
-@app.route('/logout', methods=['GET'])
-def logout():
-	session.pop('username', None)
-	session.pop('password', None)
-
-	return redirect(url_for('login'), 302)
-
+							means_file=means_file, last_day_file=last_day_file, 
+							last_day=last_day)
 
 
 if __name__ == '__main__':
