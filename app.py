@@ -21,18 +21,24 @@ import datetime
 from random import randint
 from pytz import timezone
 
+import requests
+
 
 app = Flask(__name__, static_url_path='/static')
 
 app.config['SESSION_TYPE'] = 'memcached'
 app.config['SECRET_KEY'] = 'I hope this enough to be secret'
 
-stations = ("32", "33", "35", "36", "37")
-
+stations = ["32", "33", "34", "35", "36", "37", "52"]
 
 @app.route('/', methods=['GET'])
 def index():
-	return render_template('index.html', stations=stations)
+	token = request.args.get('token')
+	if token:
+		s = requests.get("https://monitor.agropogoda.com/api/get_zonds_by_token?token=" + token).json()
+	else:
+		s = stations
+	return render_template('index.html', stations=s, token=token)
 
 
 @app.route('/get_info', methods=['GET'])
@@ -40,6 +46,7 @@ def statistics():
 	station_number_default = request.args.get('station_number')
 	start_date_default = request.args.get('start_date')
 	end_date_default = request.args.get('end_date')
+	token = request.args.get('token')
 
 	if not station_number_default or not start_date_default or not end_date_default:
 		abort(400)
@@ -187,7 +194,6 @@ def statistics():
 	fig_last_day = plt.figure()
 	ax_last_day = plt.axes()
 
-	ax_last_day.set_xlabel('время (часы)')
 	ax_last_day.set_ylabel('температура (°C)')
 
 	# plot temperatures for only last day
@@ -202,13 +208,15 @@ def statistics():
 
 	conn.close()
 
+	back_link = "/?token=" + str(token) if token != 'None' else '/'
+
 	return render_template('station_info.html', results=result_string,
 							last_measurement=last_mes_string, 
 							station_number=station_number_default,
 							date='.'.join(start_date_default.split('-')[::-1]) + 
 							" - " + '.'.join(end_date_default.split('-')[::-1]),
 							means_file=means_file, last_day_file=last_day_file, 
-							last_day=last_day)
+							last_day=last_day, back_link=back_link)
 
 
 if __name__ == '__main__':
